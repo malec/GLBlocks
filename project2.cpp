@@ -172,7 +172,7 @@ void init()
 
 	// Define surface
 	// define_vase();
-	define_donut();
+	// define_donut();
 }
 
 //---------------------------------------
