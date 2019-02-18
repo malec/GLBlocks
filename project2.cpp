@@ -158,6 +158,43 @@ void cube(float midx, float midy, float midz, float size)
 	glEnd();
 }
 
+bool flyMode = false;
+float x = 0;
+float y = 0;
+float z = 0;
+float speed = .1;
+void keyPressed(unsigned char key, int x, int y) {
+	key = tolower(key);
+	if (key == 'x') {
+		cout << "Now we're " << (flyMode == true ? "" : "not ") << "in fly mode" << endl;
+		flyMode = !flyMode;
+	}
+	else if (key == 'w') {
+		// move forward
+		z -= speed;
+		cout << "w" << endl;
+	}
+	else if (key == 'a') {
+		// move left
+		y -= speed;
+		cout << "a" << endl;
+	}
+	else if (key == 's') {
+		// move back
+		z += speed;
+		cout << "s" << endl;
+	}
+	else if (key == 'd') {
+		// move right
+		y += speed;
+		cout << "d" << endl;
+	}
+	else if (key == 'r') {
+		angle = (angle + 5) % 360;
+	}
+	glutPostRedisplay();
+}
+
 //---------------------------------------
 // Init function for OpenGL
 //---------------------------------------
@@ -169,6 +206,7 @@ void init()
 	glLoadIdentity();
 	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
 	glEnable(GL_DEPTH_TEST);
+	glutKeyboardFunc(keyPressed);
 
 	// Define surface
 	// define_vase();
@@ -182,13 +220,12 @@ void display()
 {
 	// Incrementally rotate objects
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	cube(0.0, 0.0, 0.0, 0.8);
-	cube(0.0, 0.0, 0.0, 0.2);
+	cube(0.0, 0.0, 0.0, 1);
+	cube(x, y, z, .25);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(angle, 1.0, 0.0, 0.0);
 	glRotatef(angle, 0.0, 1.0, 0.0);
-	angle = (angle + 5) % 360;
 
 	//// Draw object surface
 	glColor3f(1.0, 1.0, 1.0);

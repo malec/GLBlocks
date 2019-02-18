@@ -7,8 +7,9 @@ c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(59): warning
 c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(60): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(61): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(68): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(185): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(186): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(189): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(190): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(165): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(179): warning C4244: '-=': conversion from 'float' to 'int', possible loss of data
+c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(189): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(227): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\alec\git\csce-4813-computer-graphics\project2\project2.cpp(228): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
   project2.vcxproj -> C:\Users\Alec\git\CSCE-4813-Computer-Graphics\project2\x64\Debug\project2.exe
