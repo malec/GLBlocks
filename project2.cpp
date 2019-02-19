@@ -12,6 +12,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 using namespace std;
 #define SIZE 32
 float Px[SIZE + 1][SIZE + 1];
@@ -80,7 +81,7 @@ void define_vase()
 //---------------------------------------
 // Function to draw 3D cube
 //---------------------------------------
-void cube(float midx, float midy, float midz, float size)
+void cube(float midx, float midy, float midz, float size, float r, float g, float b)
 {
 	// Define 8 vertices
 	float ax = midx - size / 2;
@@ -109,48 +110,49 @@ void cube(float midx, float midy, float midz, float size)
 	float hz = midz - size / 2;
 
 	// Draw 6 faces
-	glBegin(GL_LINE_LOOP);
-	glColor3f(1.0, 0.0, 0.0);
+	glBegin(GL_POLYGON);
+	glColor3f(r, g, b);
 	glVertex3f(ax, ay, az);
 	glVertex3f(bx, by, bz);
 	glVertex3f(cx, cy, cz);
 	glVertex3f(dx, dy, dz);
 	glEnd();
 
-	glBegin(GL_LINE_LOOP);
-	glColor3f(0.0, 1.0, 0.0);
+	glBegin(GL_POLYGON);
+	glColor3f(r - .1, g - .1, b - .1);
 	glVertex3f(ax, ay, az);
 	glVertex3f(dx, dy, dz);
 	glVertex3f(hx, hy, hz);
 	glVertex3f(ex, ey, ez);
 	glEnd();
 
-	glBegin(GL_LINE_LOOP);
-	glColor3f(0.0, 0.0, 1.0);
+	glBegin(GL_POLYGON);
+	glColor3f(r - .04, g - .04, b - .04);
 	glVertex3f(ax, ay, az);
 	glVertex3f(ex, ey, ez);
 	glVertex3f(fx, fy, fz);
 	glVertex3f(bx, by, bz);
 	glEnd();
 
-	glBegin(GL_LINE_LOOP);
-	glColor3f(0.0, 1.0, 1.0);
+	glBegin(GL_POLYGON);
+	glColor3f(r + .04, g + .04, b + .04);
 	glVertex3f(gx, gy, gz);
 	glVertex3f(fx, fy, fz);
 	glVertex3f(ex, ey, ez);
 	glVertex3f(hx, hy, hz);
 	glEnd();
 
-	glBegin(GL_LINE_LOOP);
-	glColor3f(1.0, 0.0, 1.0);
+	glBegin(GL_POLYGON);
+	glColor3f(r - .12, g - .12, b - .12);
+
 	glVertex3f(gx, gy, gz);
 	glVertex3f(cx, cy, cz);
 	glVertex3f(bx, by, bz);
 	glVertex3f(fx, fy, fz);
 	glEnd();
 
-	glBegin(GL_LINE_LOOP);
-	glColor3f(1.0, 1.0, 0.0);
+	glBegin(GL_POLYGON);
+	glColor3f(r - .2, g - .2, b - .2);
 	glVertex3f(gx, gy, gz);
 	glVertex3f(hx, hy, hz);
 	glVertex3f(dx, dy, dz);
@@ -159,42 +161,108 @@ void cube(float midx, float midy, float midz, float size)
 }
 
 bool flyMode = false;
-float x = 0;
-float y = 0;
-float z = 0;
-float speed = .1;
-void keyPressed(unsigned char key, int x, int y) {
-	key = tolower(key);
-	if (key == 'x') {
-		cout << "Now we're " << (flyMode == true ? "" : "not ") << "in fly mode" << endl;
+float selectorX = 0;
+float selectorY = 0;
+float selectorZ = 0;
+float flyX = 0;
+float flyY = 0;
+float flyZ = 0;
+float speed = .02;
+class Coordinate {
+public:
+	float x, y, z;
+	Coordinate(float _x, float _y, float _z) {
+		x = _x;
+		y = _y;
+		z = _z;
+	}
+};
+vector<Coordinate> cubes;
+void keyPressed(unsigned char key, int _x, int _y) {
+	if (tolower(key) == 'f') {
 		flyMode = !flyMode;
+		cout << "Fly mode " << (flyMode ? "on " : "off ") << endl;
 	}
-	else if (key == 'w') {
+	if (tolower(key) == 'w') {
 		// move forward
-		z -= speed;
-		cout << "w" << endl;
+		if (flyMode) {
+			flyZ = ((flyZ -= speed) < -1) ? -1 : flyZ - speed;
+		}
+		else {
+			selectorZ = ((selectorZ -= speed) < -1) ? -1 : selectorZ - speed;
+		}
+		glutPostRedisplay();
 	}
-	else if (key == 'a') {
+	else if (tolower(key) == 'a') {
 		// move left
-		y -= speed;
-		cout << "a" << endl;
+		if (flyMode) {
+			flyX = ((flyX -= speed) < -1) ? -1 : flyX - speed;
+		}
+		else {
+			selectorX = ((selectorX -= speed) < -1) ? -1 : selectorX - speed;
+		}
+		glutPostRedisplay();
 	}
-	else if (key == 's') {
+	else if (tolower(key) == 's') {
 		// move back
-		z += speed;
-		cout << "s" << endl;
+		if (flyMode) {
+			flyZ = ((flyZ += speed) > 1) ? 1 : flyZ + speed;
+		}
+		else {
+			selectorZ = ((selectorZ += speed) > 1) ? 1 : selectorZ + speed;
+		}
+		glutPostRedisplay();
 	}
-	else if (key == 'd') {
-		// move right
-		y += speed;
-		cout << "d" << endl;
+	else if (tolower(key) == 'd') {
+		if (flyMode) {
+			flyX = ((flyX += speed) > 1) ? 1 : flyX + speed;
+		}
+		else {
+			// move right
+			selectorX = ((selectorX += speed) > 1) ? 1 : selectorX + speed;
+		}
+		glutPostRedisplay();
 	}
 	else if (key == 'r') {
 		angle = (angle + 5) % 360;
+		glutPostRedisplay();
 	}
-	glutPostRedisplay();
+	else if (key == 'R') {
+		angle = (angle - 5) % 360;
+		glutPostRedisplay();
+	}
+	// reset view
+	else if (tolower(key) == 27) { //escape key
+		angle = 0;
+		glutPostRedisplay();
+	}
+	else if (key == ' ') {
+		cubes.push_back(Coordinate(selectorX, selectorY, selectorZ));
+		glutPostRedisplay();
+	}
+	else if (key == 'u') {
+		if (flyMode) {
+			flyY = ((flyY += speed) > 1) ? 1 : flyY + speed;
+		}
+		else {
+			selectorY = ((selectorY += speed) > 1) ? 1 : selectorY + speed;
+		}
+		glutPostRedisplay();
+	}
+	else if (key == 'U') {
+		if (flyMode) {
+			flyY = ((flyY -= speed) < -1) ? -1 : flyY - speed;
+		}
+		else {
+			selectorY = ((selectorY -= speed) < -1) ? -1 : selectorY - speed;
+		}
+		glutPostRedisplay();
+	}
 }
 
+void mouseFunction(int button, int state, int x, int y) {
+	gluLookAt(-1, 1, -1, x, y, 0, 0, 1, 0);
+}
 //---------------------------------------
 // Init function for OpenGL
 //---------------------------------------
@@ -207,10 +275,6 @@ void init()
 	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
 	glEnable(GL_DEPTH_TEST);
 	glutKeyboardFunc(keyPressed);
-
-	// Define surface
-	// define_vase();
-	// define_donut();
 }
 
 //---------------------------------------
@@ -218,31 +282,30 @@ void init()
 //---------------------------------------
 void display()
 {
-	// Incrementally rotate objects
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	cube(0.0, 0.0, 0.0, 1);
-	cube(x, y, z, .25);
+
+	// make some cube colors
+	float colorSelectorR = 0.063;
+	float colorSelectorG = 0.886;
+	float colorSelectorB = 0.929;
+	float colorCubeDefaultR = 0.227;
+	float colorCubeDefaultG = 0.988;
+	float colorCubeDefaultB = 0.216;
+
+	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	// Apply new rotations (if required)
 	glRotatef(angle, 1.0, 0.0, 0.0);
 	glRotatef(angle, 0.0, 1.0, 0.0);
 
+	for (int i = 0; i < cubes.size(); i++) {
+		cube(cubes[i].x, cubes[i].y, cubes[i].z, 0.125, colorCubeDefaultR, colorCubeDefaultG, colorCubeDefaultB);
+	}
+
 	//// Draw object surface
-	glColor3f(1.0, 1.0, 1.0);
-	//for (int i = 0; i <= SIZE; i++)
-	//{
-	//	glBegin(GL_LINE_STRIP);
-	//	for (int j = 0; j <= SIZE; j++)
-	//		glVertex3f(Px[i][j], Py[i][j], Pz[i][j]);
-	//	glEnd();
-	//}
-	//for (int j = 0; j <= SIZE; j++)
-	//{
-	//	glBegin(GL_LINE_STRIP);
-	//	for (int i = 0; i <= SIZE; i++)
-	//		glVertex3f(Px[i][j], Py[i][j], Pz[i][j]);
-	//	glEnd();
-	//}
+	// glColor3f(1.0, 1.0, 1.0);
 	glFlush();
 }
 
@@ -258,6 +321,17 @@ int main(int argc, char *argv[])
 	glutCreateWindow("Blocks");
 	glutDisplayFunc(display);
 	init();
+	cout << "Press \"f\" to toggle fly mode (lets you move around)" << endl;
+	cout << "Press \"w\" to go forward." << endl;
+	cout << "Press \"a\" to go left" << endl;
+	cout << "Press \"s\" to go back" << endl;
+	cout << "Press \"d\" to go right." << endl;
+	cout << "Press \"u\" to go up." << endl;
+	cout << "Press \"U\" to go down" << endl;
+	cout << "Press space to place a block" << endl;
+	cout << "Press \"esc\" key to return to the original view position" << endl;
+	cout << "Press \"r\" to rotate" << endl;
+	cout << "Press \"R\" to rotate back" << endl;
 	glutMainLoop();
 	return 0;
 }
