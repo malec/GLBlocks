@@ -304,15 +304,15 @@ void display()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glRotatef(angle, 1.0, 0.0, 0.0);
+	glRotatef(angle, 0.0, 1.0, 0.0);
 
 	// Apply new rotations (if required)
-	if (!rotateMode) {
-		glRotatef(angle, 1.0, 0.0, 0.0);
-		glRotatef(angle, 0.0, 1.0, 0.0);
-	}
-	else {
-		gluLookAt(flyX, flyY, flyZ, flyX, selectorY - yTol, selectorZ - zTol, 0, 1, 0);
-	}
+	//if (!rotateMode) { // in fly mode
+	//}
+	//else { // in rotate mode
+	//	gluLookAt(flyX, flyY, flyZ, flyX, selectorY - yTol, selectorZ - zTol, 0, 1, 0);
+	//}
 	
 	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	cube(0, 0, 0, .999);
