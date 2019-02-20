@@ -176,7 +176,7 @@ void cube(float midx, float midy, float midz, float size, float r, float g, floa
 	glEnd();
 }
 
-bool flyMode = false;
+bool rotateMode = false;
 float selectorX = 0;
 float selectorY = 0;
 float selectorZ = 0;
@@ -199,12 +199,12 @@ public:
 vector<Coordinate> cubes;
 void keyPressed(unsigned char key, int _x, int _y) {
 	if (tolower(key) == 'f') {
-		flyMode = !flyMode;
-		cout << "Fly mode " << (flyMode ? "on " : "off ") << endl;
+		rotateMode = !rotateMode;
+		cout << "Rotate mode " << (rotateMode ? "on " : "off ") << endl;
 	}
 	if (tolower(key) == 'w') {
 		// move forward
-		if (flyMode) {
+		if (rotateMode) {
 			flyZ = ((flyZ -= speed) < (-1 - zTol)) ? -1 : flyZ - speed;
 		}
 		else {
@@ -214,7 +214,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	}
 	else if (tolower(key) == 'a') {
 		// move left
-		if (flyMode) {
+		if (rotateMode) {
 			flyX = ((flyX -= speed) < -1) ? -1 : flyX - speed;
 		}
 		else {
@@ -224,7 +224,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	}
 	else if (tolower(key) == 's') {
 		// move back
-		if (flyMode) {
+		if (rotateMode) {
 			flyZ = ((flyZ += speed) > (1 - zTol)) ? 1 : flyZ + speed;
 		}
 		else {
@@ -233,7 +233,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		glutPostRedisplay();
 	}
 	else if (tolower(key) == 'd') {
-		if (flyMode) {
+		if (rotateMode) {
 			flyX = ((flyX += speed) > 1) ? 1 : flyX + speed;
 		}
 		else {
@@ -260,7 +260,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		glutPostRedisplay();
 	}
 	else if (key == 'u') {
-		if (flyMode) {
+		if (rotateMode) {
 			flyY = ((flyY += speed) > 1) ? 1 : flyY + speed;
 		}
 		else {
@@ -269,7 +269,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		glutPostRedisplay();
 	}
 	else if (key == 'U') {
-		if (flyMode) {
+		if (rotateMode) {
 			flyY = ((flyY -= speed) < -1) ? -1 : flyY - speed;
 		}
 		else {
@@ -306,7 +306,7 @@ void display()
 	glLoadIdentity();
 
 	// Apply new rotations (if required)
-	if (!flyMode) {
+	if (!rotateMode) {
 		glRotatef(angle, 1.0, 0.0, 0.0);
 		glRotatef(angle, 0.0, 1.0, 0.0);
 	}
