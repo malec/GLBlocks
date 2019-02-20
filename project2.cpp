@@ -304,6 +304,9 @@ void display()
 		cube(cubes[i].x, cubes[i].y, cubes[i].z, 0.125, colorCubeDefaultR, colorCubeDefaultG, colorCubeDefaultB);
 	}
 
+	if (flyMode) {
+		gluLookAt(flyX, flyY, flyZ, selectorX, selectorY, selectorZ, 0, 1, 0);
+	}
 	//// Draw object surface
 	// glColor3f(1.0, 1.0, 1.0);
 	glFlush();
