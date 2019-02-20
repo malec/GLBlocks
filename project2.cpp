@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
 {
 	glutInit(&argc, argv);
 	glutInitWindowSize(500, 500);
-	glutInitWindowPosition(250, 250);
+	glutInitWindowPosition(600, 250);
 	glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH);
 	glutCreateWindow("Blocks");
 	glutDisplayFunc(display);
