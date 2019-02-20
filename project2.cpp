@@ -276,12 +276,6 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	}
 }
 
-void mouseFunction(int button, int state, int x, int y) {
-	gluLookAt(-1, 1, -1, x, y, 0, 0, 1, 0);
-}
-//---------------------------------------
-// Init function for OpenGL
-//---------------------------------------
 void init()
 {
 	// Initialize OpenGL
@@ -293,9 +287,6 @@ void init()
 	glutKeyboardFunc(keyPressed);
 }
 
-//---------------------------------------
-// Display callback for OpenGL
-//---------------------------------------
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
