@@ -179,11 +179,12 @@ void cube(float midx, float midy, float midz, float size, float r, float g, floa
 bool flyMode = false;
 float selectorX = 0;
 float selectorY = 0;
-float selectorZ = 0;
+float selectorZ = 1;
 float flyX = 0;
 float flyY = 0;
 float flyZ = 0;
 float speed = .02;
+
 class Coordinate {
 public:
 	float x, y, z;
@@ -303,8 +304,13 @@ void display()
 	glLoadIdentity();
 
 	// Apply new rotations (if required)
-	glRotatef(angle, 1.0, 0.0, 0.0);
-	glRotatef(angle, 0.0, 1.0, 0.0);
+	if (flyMode) {
+		gluLookAt(flyX, flyY, flyZ, selectorX, selectorY, selectorZ, 0, 1, 0);
+	}
+	else {
+		glRotatef(angle, 1.0, 0.0, 0.0);
+		glRotatef(angle, 0.0, 1.0, 0.0);
+	}
 
 	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	cube(0, 0, 0, .999);
@@ -312,9 +318,6 @@ void display()
 		cube(cubes[i].x, cubes[i].y, cubes[i].z, 0.125, colorCubeDefaultR, colorCubeDefaultG, colorCubeDefaultB);
 	}
 
-	if (flyMode) {
-		gluLookAt(flyX, flyY, flyZ, selectorX, selectorY, selectorZ, 0, 1, 0);
-	}
 	//// Draw object surface
 	// glColor3f(1.0, 1.0, 1.0);
 	glFlush();
