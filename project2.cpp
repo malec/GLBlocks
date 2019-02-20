@@ -278,7 +278,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	else if (key == 127) {
 		// find the block in a vector of cubes
 		// tolerance var for checking block position
-		float tol = .05;
+		float tol = .09;
 		bool found = false;
 		int count = 0;
 		while (!found && count < cubes.size()) {
@@ -329,7 +329,7 @@ void display()
 	glRotatef(angleZ, 0, 0, 1);
 
 	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
-	cube(0, 0, 0, .999);
+	cube(0, 0, 0, 1.125);
 	for (int i = 0; i < cubes.size(); i++) {
 		cube(cubes[i].x, cubes[i].y, cubes[i].z, 0.125, colorCubeDefaultR, colorCubeDefaultG, colorCubeDefaultB);
 	}
