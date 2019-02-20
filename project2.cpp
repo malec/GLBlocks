@@ -14,12 +14,85 @@
 #include <stdlib.h>
 #include <vector>
 using namespace std;
-#define SIZE 32
-float Px[SIZE + 1][SIZE + 1];
-float Py[SIZE + 1][SIZE + 1];
-float Pz[SIZE + 1][SIZE + 1];
 int angle = 0;
 
+void cube(float midx, float midy, float midz, float size)
+{
+	// Define 8 vertices
+	float ax = midx - size / 2;
+	float ay = midy - size / 2;
+	float az = midz + size / 2;
+	float bx = midx + size / 2;
+	float by = midy - size / 2;
+	float bz = midz + size / 2;
+	float cx = midx + size / 2;
+	float cy = midy + size / 2;
+	float cz = midz + size / 2;
+	float dx = midx - size / 2;
+	float dy = midy + size / 2;
+	float dz = midz + size / 2;
+	float ex = midx - size / 2;
+	float ey = midy - size / 2;
+	float ez = midz - size / 2;
+	float fx = midx + size / 2;
+	float fy = midy - size / 2;
+	float fz = midz - size / 2;
+	float gx = midx + size / 2;
+	float gy = midy + size / 2;
+	float gz = midz - size / 2;
+	float hx = midx - size / 2;
+	float hy = midy + size / 2;
+	float hz = midz - size / 2;
+
+	// Draw 6 faces
+	glBegin(GL_LINE_LOOP);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(ax, ay, az);
+	glVertex3f(bx, by, bz);
+	glVertex3f(cx, cy, cz);
+	glVertex3f(dx, dy, dz);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(ax, ay, az);
+	glVertex3f(dx, dy, dz);
+	glVertex3f(hx, hy, hz);
+	glVertex3f(ex, ey, ez);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(ax, ay, az);
+	glVertex3f(ex, ey, ez);
+	glVertex3f(fx, fy, fz);
+	glVertex3f(bx, by, bz);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor3f(0.0, 1.0, 1.0);
+	glVertex3f(gx, gy, gz);
+	glVertex3f(fx, fy, fz);
+	glVertex3f(ex, ey, ez);
+	glVertex3f(hx, hy, hz);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor3f(1.0, 0.0, 1.0);
+	glVertex3f(gx, gy, gz);
+	glVertex3f(cx, cy, cz);
+	glVertex3f(bx, by, bz);
+	glVertex3f(fx, fy, fz);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor3f(1.0, 1.0, 0.0);
+	glVertex3f(gx, gy, gz);
+	glVertex3f(hx, hy, hz);
+	glVertex3f(dx, dy, dz);
+	glVertex3f(cx, cy, cz);
+	glEnd();
+}
 
 //---------------------------------------
 // Function to draw 3D cube
@@ -235,7 +308,6 @@ void display()
 	float colorCubeDefaultG = 0.988;
 	float colorCubeDefaultB = 0.216;
 
-	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -243,6 +315,8 @@ void display()
 	glRotatef(angle, 1.0, 0.0, 0.0);
 	glRotatef(angle, 0.0, 1.0, 0.0);
 
+	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
+	cube(0, 0, 0, .999);
 	for (int i = 0; i < cubes.size(); i++) {
 		cube(cubes[i].x, cubes[i].y, cubes[i].z, 0.125, colorCubeDefaultR, colorCubeDefaultG, colorCubeDefaultB);
 	}
