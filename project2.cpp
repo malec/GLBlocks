@@ -186,6 +186,9 @@ float flyZ = .75;
 float speed = .02;
 float yTol = .5;
 float zTol = .8;
+int angleX = 0;
+int angleY = 0;
+int angleZ = 0;
 
 class Coordinate {
 public:
@@ -205,7 +208,8 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	if (tolower(key) == 'w') {
 		// move forward
 		if (rotateMode) {
-			flyZ = ((flyZ -= speed) < (-1 - zTol)) ? -1 : flyZ - speed;
+			angleX = (angleX + 5) % 360;
+			// flyZ = ((flyZ -= speed) < (-1 - zTol)) ? -1 : flyZ - speed;
 		}
 		else {
 			selectorZ = ((selectorZ -= speed) < -1) ? -1 : selectorZ - speed;
@@ -215,7 +219,8 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	else if (tolower(key) == 'a') {
 		// move left
 		if (rotateMode) {
-			flyX = ((flyX -= speed) < -1) ? -1 : flyX - speed;
+			// flyX = ((flyX -= speed) < -1) ? -1 : flyX - speed;
+			angleZ = (angleZ + 5) % 360;
 		}
 		else {
 			selectorX = ((selectorX -= speed) < -1) ? -1 : selectorX - speed;
@@ -226,6 +231,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		// move back
 		if (rotateMode) {
 			flyZ = ((flyZ += speed) > (1 - zTol)) ? 1 : flyZ + speed;
+			angleX = (angleX - 5) % 360;
 		}
 		else {
 			selectorZ = ((selectorZ += speed) > 1) ? 1 : selectorZ + speed;
@@ -234,6 +240,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	}
 	else if (tolower(key) == 'd') {
 		if (rotateMode) {
+			angleZ = (angleZ - 5) % 360;
 			flyX = ((flyX += speed) > 1) ? 1 : flyX + speed;
 		}
 		else {
@@ -277,6 +284,19 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		}
 		glutPostRedisplay();
 	}
+	else if (key == 127) { // delete key
+		// find a cube with the current position
+		bool found = false;
+		int count = 0;
+		while (!found && count < cubes.size()){
+			Coordinate temp = cubes[count];
+			if (temp.x == selectorX && temp.y == selectorY && temp.z == selectorZ) {
+				cubes.erase(cubes.begin() + count);
+				found = true;
+			}
+			count++;
+		}
+	}
 }
 
 void init()
@@ -304,8 +324,9 @@ void display()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(angle, 1.0, 0.0, 0.0);
-	glRotatef(angle, 0.0, 1.0, 0.0);
+	glRotatef(angleX, 1.0, 0.0, 0.0);
+	glRotatef(angleY, 0.0, 1.0, 0.0);
+	glRotatef(angleZ, 0, 0, 1);
 
 	// Apply new rotations (if required)
 	//if (!rotateMode) { // in fly mode
