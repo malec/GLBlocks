@@ -181,9 +181,6 @@ bool rotateMode = false;
 float selectorX = 0;
 float selectorY = 0;
 float selectorZ = 0;
-float flyX = 0;
-float flyY = 0;
-float flyZ = .75;
 float speed = .02;
 float yTol = .5;
 float zTol = .8;
@@ -202,14 +199,18 @@ public:
 };
 vector<Coordinate> cubes;
 void keyPressed(unsigned char key, int _x, int _y) {
-	if (tolower(key) == 'f') {
-		rotateMode = !rotateMode;
-		cout << "Rotate mode " << (rotateMode ? "on " : "off ") << endl;
+	if (tolower(key) == 'r') {
+		rotateMode = true;
+		cout << (rotateMode ? "Rotate mode " : "Fly Mode ") << "on!" << endl;
 	}
-	if (key == 'z') {
+	else if (tolower(key) == 'f') {
+		rotateMode = false;
+		cout << (rotateMode ? "Rotate mode " : "Fly Mode ") << "on!" << endl;
+	}
+	else if (key == 'z') {
 		// move forward
 		if (rotateMode) {
-			angleZ = (angleZ + 5) % 360;
+			angleZ = (angleZ - 5) % 360;
 			// flyZ = ((flyZ -= speed) < (-1 - zTol)) ? -1 : flyZ - speed;
 		}
 		else {
@@ -219,8 +220,8 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	}
 	else if (key == 'Z') { // move back
 		if (rotateMode) {
-			flyZ = ((flyZ += speed) > 1) ? 1 : flyZ + speed;
-			angleZ = (angleZ - 5) % 360;
+			// flyZ = ((flyZ += speed) > 1) ? 1 : flyZ + speed;
+			angleZ = (angleZ + 5) % 360;
 		}
 		else {
 			selectorZ = ((selectorZ += speed) > 1) ? 1 : selectorZ + speed;
@@ -230,8 +231,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	else if (key == 'X') {
 		// move left
 		if (rotateMode) {
-			// flyX = ((flyX -= speed) < -1) ? -1 : flyX - speed;
-			angleX = (angleX + 5) % 360;
+			angleX = (angleX - 5) % 360;
 		}
 		else {
 			selectorX = ((selectorX -= speed) < -1) ? -1 : selectorX - speed;
@@ -240,8 +240,8 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	}
 	else if (key == 'x') {
 		if (rotateMode) {
-			angleX = (angleX - 5) % 360;
-			flyX = ((flyX += speed) > 1) ? 1 : flyX + speed;
+			angleX = (angleX + 5) % 360;
+			// flyX = ((flyX += speed) > 1) ? 1 : flyX + speed;
 		}
 		else {
 			// move right
@@ -249,17 +249,14 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		}
 		glutPostRedisplay();
 	}
-	else if (tolower(key) == 27) { //escape key
-		angle = 0;
-		glutPostRedisplay();
-	}
+	// Add block
 	else if (key == ' ') {
 		cubes.push_back(Coordinate(selectorX, selectorY, selectorZ));
 		glutPostRedisplay();
 	}
 	else if (key == 'y') {
 		if (rotateMode) {
-			flyY = ((flyY += speed) > 1) ? 1 : flyY + speed;
+			// flyY = ((flyY += speed) > 1) ? 1 : flyY + speed;
 			angleY = (angleY + 5) % 360;
 		}
 		else {
@@ -269,7 +266,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	}
 	else if (key == 'Y') {
 		if (rotateMode) {
-			flyY = ((flyY -= speed) < -1) ? -1 : flyY - speed;
+			// flyY = ((flyY -= speed) < -1) ? -1 : flyY - speed;
 			angleY = (angleY - 5) % 360;
 		}
 		else {
@@ -277,11 +274,11 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		}
 		glutPostRedisplay();
 	}
-	else if (key == 127) { // delete key
-		// find a cube with the current position
+	// Delete key - Delete a block
+	else if (key == 127) {
 		bool found = false;
 		int count = 0;
-		while (!found && count < cubes.size()){
+		while (!found && count < cubes.size()) {
 			Coordinate temp = cubes[count];
 			if (temp.x == selectorX && temp.y == selectorY && temp.z == selectorZ) {
 				cubes.erase(cubes.begin() + count);
@@ -320,7 +317,7 @@ void display()
 	glRotatef(angleX, 1.0, 0.0, 0.0);
 	glRotatef(angleY, 0.0, 1.0, 0.0);
 	glRotatef(angleZ, 0, 0, 1);
-	
+
 	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	cube(0, 0, 0, .999);
 	for (int i = 0; i < cubes.size(); i++) {
