@@ -20,63 +20,6 @@ float Py[SIZE + 1][SIZE + 1];
 float Pz[SIZE + 1][SIZE + 1];
 int angle = 0;
 
-//---------------------------------------
-// Define donut surface
-//---------------------------------------
-void define_donut()
-{
-	// Create X-Y profile
-	for (int i = 0; i <= SIZE; i++)
-	{
-		float theta = i * 2 * 3.14 / SIZE;
-		Px[i][0] = 0.2 * cos(theta) + 0.5;
-		Py[i][0] = 0.2 * sin(theta);
-		Pz[i][0] = 0.0;
-	}
-
-	// Perform rotation around Y axis
-	for (int j = 1; j <= SIZE; j++)
-	{
-		float theta = j * 2 * 3.14 / SIZE;
-		float cos_theta = cos(theta);
-		float sin_theta = sin(theta);
-		for (int i = 0; i <= SIZE; i++)
-		{
-			Px[i][j] = Px[i][0] * cos_theta - Pz[i][0] * sin_theta;
-			Py[i][j] = Py[i][0];
-			Pz[i][j] = Px[i][0] * sin_theta + Pz[i][0] * cos_theta;
-		}
-	}
-}
-
-//---------------------------------------
-// Define vase surface
-//---------------------------------------
-void define_vase()
-{
-	// Create X-Y profile
-	for (int i = 0; i <= SIZE; i++)
-	{
-		float theta = i * 2 * 3.14 / SIZE;
-		Px[i][0] = 0.2 * sin(theta) + 0.5;
-		Py[i][0] = (float)i / (float)SIZE - 0.5;
-		Pz[i][0] = 0.0;
-	}
-
-	// Perform rotation around Y axis
-	for (int j = 1; j <= SIZE; j++)
-	{
-		float theta = j * 2 * 3.14 / SIZE;
-		float cos_theta = cos(theta);
-		float sin_theta = sin(theta);
-		for (int i = 0; i <= SIZE; i++)
-		{
-			Px[i][j] = Px[i][0] * cos_theta - Pz[i][0] * sin_theta;
-			Py[i][j] = Py[i][0];
-			Pz[i][j] = Px[i][0] * sin_theta + Pz[i][0] * cos_theta;
-		}
-	}
-}
 
 //---------------------------------------
 // Function to draw 3D cube
