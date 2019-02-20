@@ -227,7 +227,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		}
 		glutPostRedisplay();
 	}
-	else if (key == 'x') {
+	else if (key == 'X') {
 		// move left
 		if (rotateMode) {
 			// flyX = ((flyX -= speed) < -1) ? -1 : flyX - speed;
@@ -238,7 +238,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		}
 		glutPostRedisplay();
 	}
-	else if (key == 'X') {
+	else if (key == 'x') {
 		if (rotateMode) {
 			angleX = (angleX - 5) % 360;
 			flyX = ((flyX += speed) > 1) ? 1 : flyX + speed;
@@ -320,13 +320,6 @@ void display()
 	glRotatef(angleX, 1.0, 0.0, 0.0);
 	glRotatef(angleY, 0.0, 1.0, 0.0);
 	glRotatef(angleZ, 0, 0, 1);
-
-	// Apply new rotations (if required)
-	//if (!rotateMode) { // in fly mode
-	//}
-	//else { // in rotate mode
-	//	gluLookAt(flyX, flyY, flyZ, flyX, selectorY - yTol, selectorZ - zTol, 0, 1, 0);
-	//}
 	
 	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	cube(0, 0, 0, .999);
