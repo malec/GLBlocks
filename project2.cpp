@@ -14,73 +14,90 @@
 #include <stdlib.h>
 #include <vector>
 using namespace std;
-#define SIZE 32
-float Px[SIZE + 1][SIZE + 1];
-float Py[SIZE + 1][SIZE + 1];
-float Pz[SIZE + 1][SIZE + 1];
 int angle = 0;
-
-//---------------------------------------
-// Define donut surface
-//---------------------------------------
-void define_donut()
-{
-	// Create X-Y profile
-	for (int i = 0; i <= SIZE; i++)
-	{
-		float theta = i * 2 * 3.14 / SIZE;
-		Px[i][0] = 0.2 * cos(theta) + 0.5;
-		Py[i][0] = 0.2 * sin(theta);
-		Pz[i][0] = 0.0;
-	}
-
-	// Perform rotation around Y axis
-	for (int j = 1; j <= SIZE; j++)
-	{
-		float theta = j * 2 * 3.14 / SIZE;
-		float cos_theta = cos(theta);
-		float sin_theta = sin(theta);
-		for (int i = 0; i <= SIZE; i++)
-		{
-			Px[i][j] = Px[i][0] * cos_theta - Pz[i][0] * sin_theta;
-			Py[i][j] = Py[i][0];
-			Pz[i][j] = Px[i][0] * sin_theta + Pz[i][0] * cos_theta;
-		}
-	}
-}
-
-//---------------------------------------
-// Define vase surface
-//---------------------------------------
-void define_vase()
-{
-	// Create X-Y profile
-	for (int i = 0; i <= SIZE; i++)
-	{
-		float theta = i * 2 * 3.14 / SIZE;
-		Px[i][0] = 0.2 * sin(theta) + 0.5;
-		Py[i][0] = (float)i / (float)SIZE - 0.5;
-		Pz[i][0] = 0.0;
-	}
-
-	// Perform rotation around Y axis
-	for (int j = 1; j <= SIZE; j++)
-	{
-		float theta = j * 2 * 3.14 / SIZE;
-		float cos_theta = cos(theta);
-		float sin_theta = sin(theta);
-		for (int i = 0; i <= SIZE; i++)
-		{
-			Px[i][j] = Px[i][0] * cos_theta - Pz[i][0] * sin_theta;
-			Py[i][j] = Py[i][0];
-			Pz[i][j] = Px[i][0] * sin_theta + Pz[i][0] * cos_theta;
-		}
-	}
-}
 
 //---------------------------------------
 // Function to draw 3D cube
 //---------------------------------------
+void cube(float midx, float midy, float midz, float size)
+{
+	// Define 8 vertices
+	float ax = midx - size / 2;
+	float ay = midy - size / 2;
+	float az = midz + size / 2;
+	float bx = midx + size / 2;
+	float by = midy - size / 2;
+	float bz = midz + size / 2;
+	float cx = midx + size / 2;
+	float cy = midy + size / 2;
+	float cz = midz + size / 2;
+	float dx = midx - size / 2;
+	float dy = midy + size / 2;
+	float dz = midz + size / 2;
+	float ex = midx - size / 2;
+	float ey = midy - size / 2;
+	float ez = midz - size / 2;
+	float fx = midx + size / 2;
+	float fy = midy - size / 2;
+	float fz = midz - size / 2;
+	float gx = midx + size / 2;
+	float gy = midy + size / 2;
+	float gz = midz - size / 2;
+	float hx = midx - size / 2;
+	float hy = midy + size / 2;
+	float hz = midz - size / 2;
+
+	// Draw 6 faces
+	glBegin(GL_LINE_LOOP);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(ax, ay, az);
+	glVertex3f(bx, by, bz);
+	glVertex3f(cx, cy, cz);
+	glVertex3f(dx, dy, dz);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(ax, ay, az);
+	glVertex3f(dx, dy, dz);
+	glVertex3f(hx, hy, hz);
+	glVertex3f(ex, ey, ez);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(ax, ay, az);
+	glVertex3f(ex, ey, ez);
+	glVertex3f(fx, fy, fz);
+	glVertex3f(bx, by, bz);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor3f(0.0, 1.0, 1.0);
+	glVertex3f(gx, gy, gz);
+	glVertex3f(fx, fy, fz);
+	glVertex3f(ex, ey, ez);
+	glVertex3f(hx, hy, hz);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor3f(1.0, 0.0, 1.0);
+	glVertex3f(gx, gy, gz);
+	glVertex3f(cx, cy, cz);
+	glVertex3f(bx, by, bz);
+	glVertex3f(fx, fy, fz);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glColor3f(1.0, 1.0, 0.0);
+	glVertex3f(gx, gy, gz);
+	glVertex3f(hx, hy, hz);
+	glVertex3f(dx, dy, dz);
+	glVertex3f(cx, cy, cz);
+	glEnd();
+}
+
+// Draw a cube with a color
 void cube(float midx, float midy, float midz, float size, float r, float g, float b)
 {
 	// Define 8 vertices
@@ -160,14 +177,17 @@ void cube(float midx, float midy, float midz, float size, float r, float g, floa
 	glEnd();
 }
 
-bool flyMode = false;
+bool rotateMode = false;
 float selectorX = 0;
 float selectorY = 0;
 float selectorZ = 0;
-float flyX = 0;
-float flyY = 0;
-float flyZ = 0;
 float speed = .02;
+float yTol = .5;
+float zTol = .8;
+int angleX = 0;
+int angleY = 0;
+int angleZ = 0;
+
 class Coordinate {
 public:
 	float x, y, z;
@@ -179,43 +199,49 @@ public:
 };
 vector<Coordinate> cubes;
 void keyPressed(unsigned char key, int _x, int _y) {
-	if (tolower(key) == 'f') {
-		flyMode = !flyMode;
-		cout << "Fly mode " << (flyMode ? "on " : "off ") << endl;
+	if (tolower(key) == 'r') {
+		rotateMode = true;
+		cout << (rotateMode ? "Rotate mode " : "Fly Mode ") << "on!" << endl;
 	}
-	if (tolower(key) == 'w') {
+	else if (tolower(key) == 'f') {
+		rotateMode = false;
+		cout << (rotateMode ? "Rotate mode " : "Fly Mode ") << "on!" << endl;
+	}
+	else if (key == 'z') {
 		// move forward
-		if (flyMode) {
-			flyZ = ((flyZ -= speed) < -1) ? -1 : flyZ - speed;
+		if (rotateMode) {
+			angleZ = (angleZ - 5) % 360;
+			// flyZ = ((flyZ -= speed) < (-1 - zTol)) ? -1 : flyZ - speed;
 		}
 		else {
 			selectorZ = ((selectorZ -= speed) < -1) ? -1 : selectorZ - speed;
 		}
 		glutPostRedisplay();
 	}
-	else if (tolower(key) == 'a') {
-		// move left
-		if (flyMode) {
-			flyX = ((flyX -= speed) < -1) ? -1 : flyX - speed;
-		}
-		else {
-			selectorX = ((selectorX -= speed) < -1) ? -1 : selectorX - speed;
-		}
-		glutPostRedisplay();
-	}
-	else if (tolower(key) == 's') {
-		// move back
-		if (flyMode) {
-			flyZ = ((flyZ += speed) > 1) ? 1 : flyZ + speed;
+	else if (key == 'Z') { // move back
+		if (rotateMode) {
+			// flyZ = ((flyZ += speed) > 1) ? 1 : flyZ + speed;
+			angleZ = (angleZ + 5) % 360;
 		}
 		else {
 			selectorZ = ((selectorZ += speed) > 1) ? 1 : selectorZ + speed;
 		}
 		glutPostRedisplay();
 	}
-	else if (tolower(key) == 'd') {
-		if (flyMode) {
-			flyX = ((flyX += speed) > 1) ? 1 : flyX + speed;
+	else if (key == 'X') {
+		// move left
+		if (rotateMode) {
+			angleX = (angleX - 5) % 360;
+		}
+		else {
+			selectorX = ((selectorX -= speed) < -1) ? -1 : selectorX - speed;
+		}
+		glutPostRedisplay();
+	}
+	else if (key == 'x') {
+		if (rotateMode) {
+			angleX = (angleX + 5) % 360;
+			// flyX = ((flyX += speed) > 1) ? 1 : flyX + speed;
 		}
 		else {
 			// move right
@@ -223,49 +249,46 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		}
 		glutPostRedisplay();
 	}
-	else if (key == 'r') {
-		angle = (angle + 5) % 360;
-		glutPostRedisplay();
-	}
-	else if (key == 'R') {
-		angle = (angle - 5) % 360;
-		glutPostRedisplay();
-	}
-	// reset view
-	else if (tolower(key) == 27) { //escape key
-		angle = 0;
-		glutPostRedisplay();
-	}
+	// Add block
 	else if (key == ' ') {
 		cubes.push_back(Coordinate(selectorX, selectorY, selectorZ));
 		glutPostRedisplay();
 	}
-	else if (key == 'u') {
-		if (flyMode) {
-			flyY = ((flyY += speed) > 1) ? 1 : flyY + speed;
+	else if (key == 'y') {
+		if (rotateMode) {
+			// flyY = ((flyY += speed) > 1) ? 1 : flyY + speed;
+			angleY = (angleY + 5) % 360;
 		}
 		else {
 			selectorY = ((selectorY += speed) > 1) ? 1 : selectorY + speed;
 		}
 		glutPostRedisplay();
 	}
-	else if (key == 'U') {
-		if (flyMode) {
-			flyY = ((flyY -= speed) < -1) ? -1 : flyY - speed;
+	else if (key == 'Y') {
+		if (rotateMode) {
+			// flyY = ((flyY -= speed) < -1) ? -1 : flyY - speed;
+			angleY = (angleY - 5) % 360;
 		}
 		else {
 			selectorY = ((selectorY -= speed) < -1) ? -1 : selectorY - speed;
 		}
 		glutPostRedisplay();
 	}
+	// Delete key - Delete a block
+	else if (key == 127) {
+		bool found = false;
+		int count = 0;
+		while (!found && count < cubes.size()) {
+			Coordinate temp = cubes[count];
+			if (temp.x == selectorX && temp.y == selectorY && temp.z == selectorZ) {
+				cubes.erase(cubes.begin() + count);
+				found = true;
+			}
+			count++;
+		}
+	}
 }
 
-void mouseFunction(int button, int state, int x, int y) {
-	gluLookAt(-1, 1, -1, x, y, 0, 0, 1, 0);
-}
-//---------------------------------------
-// Init function for OpenGL
-//---------------------------------------
 void init()
 {
 	// Initialize OpenGL
@@ -277,9 +300,6 @@ void init()
 	glutKeyboardFunc(keyPressed);
 }
 
-//---------------------------------------
-// Display callback for OpenGL
-//---------------------------------------
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -292,14 +312,14 @@ void display()
 	float colorCubeDefaultG = 0.988;
 	float colorCubeDefaultB = 0.216;
 
-	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glRotatef(angleX, 1.0, 0.0, 0.0);
+	glRotatef(angleY, 0.0, 1.0, 0.0);
+	glRotatef(angleZ, 0, 0, 1);
 
-	// Apply new rotations (if required)
-	glRotatef(angle, 1.0, 0.0, 0.0);
-	glRotatef(angle, 0.0, 1.0, 0.0);
-
+	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
+	cube(0, 0, 0, .999);
 	for (int i = 0; i < cubes.size(); i++) {
 		cube(cubes[i].x, cubes[i].y, cubes[i].z, 0.125, colorCubeDefaultR, colorCubeDefaultG, colorCubeDefaultB);
 	}
