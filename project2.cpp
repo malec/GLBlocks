@@ -276,13 +276,23 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	}
 	// Delete key - Delete a block
 	else if (key == 127) {
+		// find the block in a vector of cubes
+		// tolerance var for checking block position
+		float tol = .05;
 		bool found = false;
 		int count = 0;
 		while (!found && count < cubes.size()) {
 			Coordinate temp = cubes[count];
-			if (temp.x == selectorX && temp.y == selectorY && temp.z == selectorZ) {
+			bool xGood = (temp.x < (selectorX + tol) && temp.x >(selectorX - tol)) || false;
+			bool yGood = (temp.y < (selectorY + tol) && temp.y >(selectorY - tol)) || false;
+			bool zGood = (temp.z < (selectorZ + tol) && temp.z >(selectorZ - tol)) || false;
+
+			// If it's a good match, delete it
+			if (xGood && yGood && zGood) {
 				cubes.erase(cubes.begin() + count);
 				found = true;
+				// redisplay for the removed cube
+				glutPostRedisplay();
 			}
 			count++;
 		}
