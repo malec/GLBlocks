@@ -179,11 +179,13 @@ void cube(float midx, float midy, float midz, float size, float r, float g, floa
 bool flyMode = false;
 float selectorX = 0;
 float selectorY = 0;
-float selectorZ = 1;
+float selectorZ = 0;
 float flyX = 0;
 float flyY = 0;
-float flyZ = 0;
+float flyZ = .75;
 float speed = .02;
+float yTol = .5;
+float zTol = .8;
 
 class Coordinate {
 public:
@@ -203,7 +205,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	if (tolower(key) == 'w') {
 		// move forward
 		if (flyMode) {
-			flyZ = ((flyZ -= speed) < -1) ? -1 : flyZ - speed;
+			flyZ = ((flyZ -= speed) < (-1 - zTol)) ? -1 : flyZ - speed;
 		}
 		else {
 			selectorZ = ((selectorZ -= speed) < -1) ? -1 : selectorZ - speed;
@@ -223,7 +225,7 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	else if (tolower(key) == 's') {
 		// move back
 		if (flyMode) {
-			flyZ = ((flyZ += speed) > 1) ? 1 : flyZ + speed;
+			flyZ = ((flyZ += speed) > (1 - zTol)) ? 1 : flyZ + speed;
 		}
 		else {
 			selectorZ = ((selectorZ += speed) > 1) ? 1 : selectorZ + speed;
@@ -304,14 +306,14 @@ void display()
 	glLoadIdentity();
 
 	// Apply new rotations (if required)
-	if (flyMode) {
-		gluLookAt(flyX, flyY, flyZ, selectorX, selectorY, selectorZ, 0, 1, 0);
-	}
-	else {
+	if (!flyMode) {
 		glRotatef(angle, 1.0, 0.0, 0.0);
 		glRotatef(angle, 0.0, 1.0, 0.0);
 	}
-
+	else {
+		gluLookAt(flyX, flyY, flyZ, flyX, selectorY - yTol, selectorZ - zTol, 0, 1, 0);
+	}
+	
 	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	cube(0, 0, 0, .999);
 	for (int i = 0; i < cubes.size(); i++) {
