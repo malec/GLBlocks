@@ -16,6 +16,9 @@
 using namespace std;
 int angle = 0;
 
+//---------------------------------------
+// Function to draw 3D cube
+//---------------------------------------
 void cube(float midx, float midy, float midz, float size)
 {
 	// Define 8 vertices
@@ -94,9 +97,7 @@ void cube(float midx, float midy, float midz, float size)
 	glEnd();
 }
 
-//---------------------------------------
-// Function to draw 3D cube
-//---------------------------------------
+// Draw a cube with a color
 void cube(float midx, float midy, float midz, float size, float r, float g, float b)
 {
 	// Define 8 vertices
@@ -205,10 +206,10 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		rotateMode = !rotateMode;
 		cout << "Rotate mode " << (rotateMode ? "on " : "off ") << endl;
 	}
-	if (tolower(key) == 'w') {
+	if (key == 'z') {
 		// move forward
 		if (rotateMode) {
-			angleX = (angleX + 5) % 360;
+			angleZ = (angleZ + 5) % 360;
 			// flyZ = ((flyZ -= speed) < (-1 - zTol)) ? -1 : flyZ - speed;
 		}
 		else {
@@ -216,31 +217,30 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		}
 		glutPostRedisplay();
 	}
-	else if (tolower(key) == 'a') {
-		// move left
+	else if (key == 'Z') { // move back
 		if (rotateMode) {
-			// flyX = ((flyX -= speed) < -1) ? -1 : flyX - speed;
-			angleZ = (angleZ + 5) % 360;
-		}
-		else {
-			selectorX = ((selectorX -= speed) < -1) ? -1 : selectorX - speed;
-		}
-		glutPostRedisplay();
-	}
-	else if (tolower(key) == 's') {
-		// move back
-		if (rotateMode) {
-			flyZ = ((flyZ += speed) > (1 - zTol)) ? 1 : flyZ + speed;
-			angleX = (angleX - 5) % 360;
+			flyZ = ((flyZ += speed) > 1) ? 1 : flyZ + speed;
+			angleZ = (angleZ - 5) % 360;
 		}
 		else {
 			selectorZ = ((selectorZ += speed) > 1) ? 1 : selectorZ + speed;
 		}
 		glutPostRedisplay();
 	}
-	else if (tolower(key) == 'd') {
+	else if (key == 'x') {
+		// move left
 		if (rotateMode) {
-			angleZ = (angleZ - 5) % 360;
+			// flyX = ((flyX -= speed) < -1) ? -1 : flyX - speed;
+			angleX = (angleX + 5) % 360;
+		}
+		else {
+			selectorX = ((selectorX -= speed) < -1) ? -1 : selectorX - speed;
+		}
+		glutPostRedisplay();
+	}
+	else if (key == 'X') {
+		if (rotateMode) {
+			angleX = (angleX - 5) % 360;
 			flyX = ((flyX += speed) > 1) ? 1 : flyX + speed;
 		}
 		else {
@@ -249,15 +249,6 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		}
 		glutPostRedisplay();
 	}
-	else if (key == 'r') {
-		angle = (angle + 5) % 360;
-		glutPostRedisplay();
-	}
-	else if (key == 'R') {
-		angle = (angle - 5) % 360;
-		glutPostRedisplay();
-	}
-	// reset view
 	else if (tolower(key) == 27) { //escape key
 		angle = 0;
 		glutPostRedisplay();
@@ -266,18 +257,20 @@ void keyPressed(unsigned char key, int _x, int _y) {
 		cubes.push_back(Coordinate(selectorX, selectorY, selectorZ));
 		glutPostRedisplay();
 	}
-	else if (key == 'u') {
+	else if (key == 'y') {
 		if (rotateMode) {
 			flyY = ((flyY += speed) > 1) ? 1 : flyY + speed;
+			angleY = (angleY + 5) % 360;
 		}
 		else {
 			selectorY = ((selectorY += speed) > 1) ? 1 : selectorY + speed;
 		}
 		glutPostRedisplay();
 	}
-	else if (key == 'U') {
+	else if (key == 'Y') {
 		if (rotateMode) {
 			flyY = ((flyY -= speed) < -1) ? -1 : flyY - speed;
+			angleY = (angleY - 5) % 360;
 		}
 		else {
 			selectorY = ((selectorY -= speed) < -1) ? -1 : selectorY - speed;
