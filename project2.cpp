@@ -14,11 +14,7 @@
 #include <stdlib.h>
 #include <vector>
 using namespace std;
-int angle = 0;
-
-//---------------------------------------
-// Function to draw 3D cube
-//---------------------------------------
+// Draw a cube
 void cube(float midx, float midy, float midz, float size)
 {
 	// Define 8 vertices
@@ -96,7 +92,6 @@ void cube(float midx, float midy, float midz, float size)
 	glVertex3f(cx, cy, cz);
 	glEnd();
 }
-
 // Draw a cube with a color
 void cube(float midx, float midy, float midz, float size, float r, float g, float b)
 {
@@ -176,7 +171,6 @@ void cube(float midx, float midy, float midz, float size, float r, float g, floa
 	glVertex3f(cx, cy, cz);
 	glEnd();
 }
-
 bool rotateMode = false;
 float selectorX = 0;
 float selectorY = 0;
@@ -187,14 +181,17 @@ float zTol = .8;
 int angleX = 0;
 int angleY = 0;
 int angleZ = 0;
-
 class Coordinate {
 public:
+	bool deletable = false;
 	float x, y, z;
 	Coordinate(float _x, float _y, float _z) {
 		x = _x;
 		y = _y;
 		z = _z;
+	}
+	bool operator == (Coordinate other) {
+		return other.x == x && other.y == y && other.z == z;
 	}
 };
 vector<Coordinate> cubes;
@@ -276,29 +273,30 @@ void keyPressed(unsigned char key, int _x, int _y) {
 	}
 	// Delete key - Delete a block
 	else if (key == 127) {
-		// find the block in a vector of cubes
-		// tolerance var for checking block position
-		float tol = .09;
-		bool found = false;
-		int count = 0;
-		while (!found && count < cubes.size()) {
-			Coordinate temp = cubes[count];
-			bool xGood = (temp.x < (selectorX + tol) && temp.x >(selectorX - tol)) || false;
-			bool yGood = (temp.y < (selectorY + tol) && temp.y >(selectorY - tol)) || false;
-			bool zGood = (temp.z < (selectorZ + tol) && temp.z >(selectorZ - tol)) || false;
-
-			// If it's a good match, delete it
-			if (xGood && yGood && zGood) {
-				cubes.erase(cubes.begin() + count);
-				found = true;
-				// redisplay for the removed cube
-				glutPostRedisplay();
+		// delete all cubes in deletableCubes
+		int i = cubes.size() - 1;
+		while (i >= 0 && cubes.size() >= 0) {
+			Coordinate cube = cubes[i];
+			if (cube.deletable) {
+				cubes.erase(cubes.begin() + i);
 			}
-			count++;
+			// redisplay for the removed cube
+			i--;
 		}
+		glutPostRedisplay();
 	}
 }
-
+bool isDeletable(float x, float y, float z) {
+	// find the block in a vector of cubes
+	// tolerance var for checking block position
+	float tol = .09;
+	int count = 0;
+	bool xGood = (x <= (selectorX + tol) && x >= (selectorX - tol)) || false;
+	bool yGood = (y <= (selectorY + tol) && y >= (selectorY - tol)) || false;
+	bool zGood = (z <= (selectorZ + tol) && z >= (selectorZ - tol)) || false;
+	// If it's a good match, return true
+	return xGood && yGood && zGood;
+}
 void init()
 {
 	// Initialize OpenGL
@@ -309,39 +307,42 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 	glutKeyboardFunc(keyPressed);
 }
-
+// make some cube colors
+float colorSelectorR = 0.063;
+float colorSelectorG = 0.886;
+float colorSelectorB = 0.929;
+float colorCubeDefaultR = 0.227;
+float colorCubeDefaultG = 0.988;
+float colorCubeDefaultB = 0.216;
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// make some cube colors
-	float colorSelectorR = 0.063;
-	float colorSelectorG = 0.886;
-	float colorSelectorB = 0.929;
-	float colorCubeDefaultR = 0.227;
-	float colorCubeDefaultG = 0.988;
-	float colorCubeDefaultB = 0.216;
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(angleX, 1.0, 0.0, 0.0);
 	glRotatef(angleY, 0.0, 1.0, 0.0);
 	glRotatef(angleZ, 0, 0, 1);
-
-	cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	cube(0, 0, 0, 1.125);
-	for (int i = 0; i < cubes.size(); i++) {
-		cube(cubes[i].x, cubes[i].y, cubes[i].z, 0.125, colorCubeDefaultR, colorCubeDefaultG, colorCubeDefaultB);
+	if (cubes.size() == 0) {
+		cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	}
-
-	//// Draw object surface
-	// glColor3f(1.0, 1.0, 1.0);
+	for (int i = 0; i < cubes.size(); i++) {
+		if (isDeletable(cubes[i].x, cubes[i].y, cubes[i].z)) {
+			cubes[i].deletable = true;
+			cube(cubes[i].x, cubes[i].y, cubes[i].z, 0.125, 0.99, 0, 0);
+			// if we're on top of the cube, we won't be able to see the red one, so don't draw the selector
+			if (Coordinate(cubes[i].x, cubes[i].y, cubes[i].z) == Coordinate(selectorX, selectorY, selectorZ) == false) {
+				cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
+			}
+		}
+		else {
+			cubes[i].deletable = false;
+			cube(cubes[i].x, cubes[i].y, cubes[i].z, 0.125, colorCubeDefaultR, colorCubeDefaultG, colorCubeDefaultB);
+			cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
+		}
+	}
 	glFlush();
 }
-
-//---------------------------------------
-// Main program
-//---------------------------------------
 int main(int argc, char *argv[])
 {
 	glutInit(&argc, argv);
