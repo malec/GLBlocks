@@ -183,12 +183,13 @@ int angleY = 0;
 int angleZ = 0;
 class Coordinate {
 public:
-	bool deletable = false;
+	bool deletable;
 	float x, y, z;
 	Coordinate(float _x, float _y, float _z) {
 		x = _x;
 		y = _y;
 		z = _z;
+		deletable = false;
 	}
 	bool operator == (Coordinate other) {
 		return other.x == x && other.y == y && other.z == z;
@@ -290,7 +291,6 @@ bool isDeletable(float x, float y, float z) {
 	// find the block in a vector of cubes
 	// tolerance var for checking block position
 	float tol = .09;
-	int count = 0;
 	bool xGood = (x <= (selectorX + tol) && x >= (selectorX - tol)) || false;
 	bool yGood = (y <= (selectorY + tol) && y >= (selectorY - tol)) || false;
 	bool zGood = (z <= (selectorZ + tol) && z >= (selectorZ - tol)) || false;
@@ -331,7 +331,7 @@ void display()
 			cubes[i].deletable = true;
 			cube(cubes[i].x, cubes[i].y, cubes[i].z, 0.125, 0.99, 0, 0);
 			// if we're on top of the cube, we won't be able to see the red one, so don't draw the selector
-			if (Coordinate(cubes[i].x, cubes[i].y, cubes[i].z) == Coordinate(selectorX, selectorY, selectorZ) == false) {
+			if ((Coordinate(cubes[i].x, cubes[i].y, cubes[i].z) == Coordinate(selectorX, selectorY, selectorZ)) == false) {
 				cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 			}
 		}
@@ -344,7 +344,7 @@ void display()
 	glFlush();
 }
 int main(int argc, char *argv[])
-{
+	{
 	glutInit(&argc, argv);
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(600, 250);
