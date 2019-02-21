@@ -322,7 +322,7 @@ void display()
 	glRotatef(angleX, 1.0, 0.0, 0.0);
 	glRotatef(angleY, 0.0, 1.0, 0.0);
 	glRotatef(angleZ, 0, 0, 1);
-	cube(0, 0, 0, 1.125);
+	cube(0, 0, 0, 1);
 	if (cubes.size() == 0) {
 		cube(selectorX, selectorY, selectorZ, .125, colorSelectorR, colorSelectorG, colorSelectorB);
 	}
